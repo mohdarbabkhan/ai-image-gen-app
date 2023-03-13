@@ -4,7 +4,11 @@ import { useNavigate } from 'react-router-dom'
 import {getRandomPrompt} from "../utils/index.js"
 import { FormField, Loader} from '../components';
 import {preview} from "../assets"
+import {useDispatch,useSelector} from "react-redux"
+import {createPost} from '../redux/features/postSlice.js';
 const CreatePost = () => {
+  const {loading,success} = useSelector((state) => state.post)
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [form, setform] = useState({
     name:'',
@@ -12,34 +16,22 @@ const CreatePost = () => {
     photo:'',
   });
   const [generatingImg,setGeneratingImg] = useState(false);
-  const [loading,setLoading] = useState(false);
 
   const handleSubmit = async(e) =>{
     e.preventDefault();
     if(form.prompt && form.photo){
-      setLoading(true);
       try {
-        const response = await fetch('https://dall-e-8y9s.onrender.com/api/v1/post',{
-          method:"POST",
-          headers:{
-            'Content-Type':'application/json',
-          },
-          body: JSON.stringify(form)
-        })
-
-        await response.json();
-        navigate('/');
+        await dispatch(createPost(form)).unwrap();
+       navigate('/')
       } catch (error) {
         alert(error)
-      } finally{
-        setLoading(false);
       }
     } else{
       alert("Please enter a prompt and generate an image")
     }
   }
 
-  const generateImage  = async() =>{
+  const handlegenerateImage  = async() =>{
     if(form.prompt){
       try {
         setGeneratingImg(true);
@@ -50,8 +42,7 @@ const CreatePost = () => {
           },
           body:JSON.stringify({prompt:form.prompt}),
         })
-
-        const data = await response.json();
+        const data = await response.json()
         setform({...form,photo:`data:image/jpeg;base64,${data.photo}`})
       } catch (error) {
         alert(error);
@@ -66,11 +57,9 @@ const CreatePost = () => {
 
   const handleChange = (e) =>{
     setform({...form, [e.target.name]:e.target.value})
-    console.log(form);
   }
   
   const handleSurpriseMe  = () =>{
-    console.log("i am clicked");
     const randomPrompt = getRandomPrompt(form.prompt);
     setform({...form, prompt:randomPrompt})
   }
@@ -135,7 +124,7 @@ const CreatePost = () => {
         <div className="mt-5 flex gap-5">
             <button
               type='button'
-              onClick={generateImage}
+              onClick={handlegenerateImage}
               className="text-white bg-green-700 font-medium
               rounded-md text-sm w-full sm:w-auto px-5 py-2.5 text-center"
             >

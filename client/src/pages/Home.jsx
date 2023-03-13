@@ -1,10 +1,11 @@
 import React,{useState,useEffect} from 'react'
 import {FormField,Loader,Card} from "../components/index.js"
-
+import { useSelector,useDispatch } from 'react-redux'
+import { getPost } from '../redux/features/postSlice.js'
 const RenderCards = ({data,title}) => {
   if(data?.length > 0){
     return(
-      data.map((post) =><Card key={post._id} {...post}/>)
+      data.map((post) =><Card key={post._id} {...post}/>).reverse()
     ) 
   }
 
@@ -16,35 +17,16 @@ const RenderCards = ({data,title}) => {
 }
 
 const Home = () => {
-  const [loading,setloading] = useState(false);
-  const [allposts,setallposts] = useState(null);
+
   const [searchText, setsearchText] = useState('');
   const [searchedResults,setSearchedResults] = useState(null)
   const [searchTimout,setSearchTimeout] = useState(null)
 
-  const fetchPosts = async () =>{
-    setloading(true);
-    try {
-      const response = await fetch('https://dall-e-8y9s.onrender.com/api/v1/post',{
-        method:'GET',
-        headers:{
-          'Content-Type': 'application/json',
-        },
-      })
-
-      if(response.ok){
-        const result = await response.json();
-        setallposts(result.data.reverse());
-      }
-    } catch (error) {
-      alert(error)
-    }finally{
-      setloading(false)
-    }
-  };
+  const dispatch = useDispatch();
+  const {data,loading} = useSelector((state) => state.post)
 
   useEffect(()=>{
-    fetchPosts();
+    dispatch(getPost());
   },[])
 
   const handleSearchChange = (e) => {
@@ -53,7 +35,7 @@ const Home = () => {
 
     setSearchTimeout(
       setTimeout(()=>{
-        const searchResults = allposts.filter((items) => items.name.toLowerCase()
+        const searchResults = data.filter((items) => items.name.toLowerCase()
         .includes(searchText.toLocaleLowerCase()) || items.prompt.toLocaleLowerCase().includes(
           searchText.toLocaleLowerCase()));
         console.log(searchResults);
@@ -105,7 +87,7 @@ const Home = () => {
                   />
                 ) : (
                   <RenderCards
-                    data={allposts}
+                    data={data.data}
                     title="No posts found"
                   />
                 )}
