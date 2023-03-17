@@ -1,12 +1,9 @@
-import express, { response } from "express"
+
 import * as dotenv from "dotenv"
 import {Configuration, OpenAIApi} from "openai"
 
-import PostModel from "../mongoDb/models/post.js"
 
 dotenv.config();
-
-const router = express.Router();
 
 const configuration = new Configuration({
     apiKey:process.env.OPENAI_API_KEY,
@@ -14,11 +11,7 @@ const configuration = new Configuration({
 
 const openai = new OpenAIApi(configuration);
 
-router.route('/').get((req,res) => {
-    res.send('Hello from DALL-E');
-});
-
-router.route('/').post(async (req,res) => {
+export const dalleControler = async(req,res) => {
     try {
         const {prompt} = req.body;
         const aiResponse = await openai.createImage({
@@ -34,6 +27,4 @@ router.route('/').post(async (req,res) => {
         console.log(error);
         response.status(500).send(error?.response.data.error.message)
     }
-})
-
-export default router;
+}

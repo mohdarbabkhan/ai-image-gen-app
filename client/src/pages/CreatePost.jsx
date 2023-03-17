@@ -7,7 +7,7 @@ import {preview} from "../assets"
 import {useDispatch,useSelector} from "react-redux"
 import {createPost} from '../redux/features/postSlice.js';
 const CreatePost = () => {
-  const {loading,success} = useSelector((state) => state.post)
+  const {loading} = useSelector((state) => state.post)
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [form, setform] = useState({
@@ -30,12 +30,11 @@ const CreatePost = () => {
       alert("Please enter a prompt and generate an image")
     }
   }
-
   const handlegenerateImage  = async() =>{
     if(form.prompt){
       try {
         setGeneratingImg(true);
-        const response = await fetch('https://dall-e-8y9s.onrender.com/api/v1/dalle',{
+        const response = await fetch('http://localhost:8000/api/v1/dalle',{
           method:'POST',
           headers:{
             'Content-Type': 'application/json',

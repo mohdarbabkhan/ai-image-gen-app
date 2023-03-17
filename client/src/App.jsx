@@ -1,26 +1,30 @@
+
 import React from 'react'
+import { useEffect } from 'react'
 import { BrowserRouter, Link, Routes,Route } from 'react-router-dom'
-import { CreatePost,Home } from './pages'
-import Logo from "./assets/logo.svg"
+import { CreatePost,Home,Login,Signup } from './pages'
+import Header from './constants/Header'
+import { useDispatch} from 'react-redux'
+import { setUser} from './redux/features/authSlice'
+import PrivateRoute from './pages/privateRoute'
+
 const App = () => {
+  const dispatch = useDispatch();
+  const user = JSON.parse(localStorage.getItem("profile"))
+
+    useEffect(() =>{
+      dispatch((setUser(user)));
+    },[])
   return (
     <BrowserRouter>
-      <header className="w-full flex justify-between items-center
-      sm:px-8 px-4 py-4 border-b-[#e6ebf4] border-b bg-white" >
-        <Link to='/'>
-          <img className="w-28 object-contain" src={Logo} alt='logo'/>
-        </Link>
-
-        <Link to='/create-post' className="bg-[#6469ff] px-4 py-2 text-white
-        rounded-md">
-          Create
-        </Link>
-      </header>
+      <Header/>
       <main className="sm:p-8 px-4 py-8 w-full
       bg-[#f9fafe] min-h-[calc(100vh-73px)]">
         <Routes>
           <Route path="/" element={<Home/>}/>
-          <Route path="create-post" element={<CreatePost/>}/>
+          <Route path="create-post" element={<PrivateRoute><CreatePost/></PrivateRoute>}/>
+          <Route path="sign-in" element={<Login/>}/>
+          <Route path="/sign-up" element={<Signup/>}/>
         </Routes>
       </main>
     </BrowserRouter>
