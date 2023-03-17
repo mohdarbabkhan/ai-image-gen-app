@@ -14,8 +14,10 @@
     "file-saver": "^2.0.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-google-login": "^5.2.2",
     "react-redux": "^8.0.5",
-    "react-router-dom": "^6.8.2"
+    "react-router-dom": "^6.8.2",
+    "react-toastify": "^9.1.1"
   },
   "devDependencies": {
     "@types/react": "^18.0.27",
