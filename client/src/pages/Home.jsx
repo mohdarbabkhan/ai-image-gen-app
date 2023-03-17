@@ -1,7 +1,8 @@
 import React,{useState,useEffect} from 'react'
-import {FormField,Loader,Card} from "../components/index.js"
+import {FormField,Loader,Card} from "../components"
 import { useSelector,useDispatch } from 'react-redux'
-import { getPost } from '../redux/features/postSlice.js'
+import { getPost } from '../redux/features/postSlice'
+
 const RenderCards = ({data,title}) => {
   if(data?.length > 0){
     return(
